@@ -1,0 +1,18 @@
+{
+  "name": "pkilab07",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "expressjs/express",
+	"google-auth-library": "^6.0.0",
+	"googleapis": "^48.0.0",
+	"googleapis-common": "^4.0.0"
+  }
+}
