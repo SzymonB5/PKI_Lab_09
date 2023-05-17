@@ -2,6 +2,7 @@ const { google } = require('googleapis');
 const { OAuth2Client } = require("google-auth-library");
 const express = require('express')
 const OAuth2Data = require('./google_key.json')
+const { client } = require("pg")
 
 const app = express()
 
@@ -12,7 +13,40 @@ const REDIRECT_URL = OAuth2Data.web.redirect_uris[0];
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL)
 var authed = false;
 
+
+// app.js
+const postgres = require('postgres');
+require('dotenv').config();
+
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
+const URL = `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?options=project%3D${ENDPOINT_ID}`;
+
+const sql = postgres(URL, { ssl: 'require' });
+
 app.get('/', (req, res) => {
+    const getUsers = (request, response) => {
+        console.log('Pobieram dane ...');
+        const client = new Client({
+            user: process.env.PGUSER,
+            host: process.env.PGHOST,
+            database: process.env.PGDATABASE,
+            password: process.env.PGPASSWORD,
+            port: process.env.PGPORT,
+            ssl: require
+        })
+        client.connect();
+        client.query('SELECT * FROM public."Users"', (error, res) => {
+            if (error) {
+                throw error
+            }
+            console.log('Dostałem ...');
+            for (let row of res.rows) {
+                console.log(JSON.stringify(row));
+            }
+        })
+        client.end();
+    }
+
     if (!authed) {
         res.redirect('/login');
     } else {
