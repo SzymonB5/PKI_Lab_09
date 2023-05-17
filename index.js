@@ -24,28 +24,26 @@ const URL = `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?options=
 const sql = postgres(URL, { ssl: 'require' });
 
 app.get('/', (req, res) => {
-    const getUsers = (request, response) => {
-        console.log('Pobieram dane ...');
-        const client = new Client({
-            user: process.env.PGUSER,
-            host: process.env.PGHOST,
-            database: process.env.PGDATABASE,
-            password: process.env.PGPASSWORD,
-            port: process.env.PGPORT,
-            ssl: require
-        })
-        client.connect();
-        client.query('SELECT * FROM public."Users"', (error, res) => {
-            if (error) {
-                throw error
-            }
-            console.log('Dostałem ...');
-            for (let row of res.rows) {
-                console.log(JSON.stringify(row));
-            }
-        })
-        client.end();
-    }
+    console.log('Pobieram dane ...');
+    const client = new Client({
+        user: process.env.PGUSER,
+        host: process.env.PGHOST,
+        database: process.env.PGDATABASE,
+        password: process.env.PGPASSWORD,
+        port: process.env.PGPORT,
+        ssl: require
+    })
+    client.connect();
+    client.query('SELECT * FROM public."Users"', (error, res) => {
+        if (error) {
+            throw error
+        }
+        console.log('Dostałem ...');
+        for (let row of res.rows) {
+            console.log(JSON.stringify(row));
+        }
+    })
+    client.end();
 
     if (!authed) {
         res.redirect('/login');
